@@ -1,0 +1,539 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavender Study Planner</title>
+    <style>
+        :root {
+            --lavender: #e6e6ff;
+            --light-lavender: #f0f0ff;
+            --dark-lavender: #d0d0f0;
+            --accent: #9370db;
+            --text-dark: #4a4a7a;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--lavender) 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--text-dark);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        .planner-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .planner-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(147, 112, 219, 0.15);
+        }
+        
+        .tasks-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(147, 112, 219, 0.15);
+        }
+        
+        h2 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-lavender);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--dark-lavender);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+        
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #7b5dbd;
+        }
+        
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .milestone-item input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .milestone-item button {
+            padding: 8px 12px;
+            background: #ff6b6b;
+        }
+        
+        #milestoneContainer {
+            margin-top: 15px;
+        }
+        
+        .task-card {
+            background: var(--light-lavender);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(147, 112, 219, 0.2);
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .task-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .task-deadline {
+            background: var(--dark-lavender);
+            color: var(--text-dark);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .milestones-container {
+            margin: 15px 0;
+        }
+        
+        .milestone {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .milestone input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            accent-color: var(--accent);
+        }
+        
+        .milestone label {
+            flex: 1;
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: var(--lavender);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-top: 5px;
+        }
+        
+        .delete-btn {
+            background: #ff6b6b;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-dark);
+        }
+        
+        .empty-state img {
+            max-width: 200px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Study Planner</h1>
+            <p class="subtitle">Every task is a new responsibility to achieve your goals</p>
+        </header>
+        
+        <div class="planner-container">
+            <section class="form-section">
+                <h2>Create New Task</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskName">Task Name</label>
+                        <input type="text" id="taskName" placeholder="Enter task name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deadline">Deadline</label>
+                        <input type="date" id="deadline" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="3" placeholder="Enter task description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Milestones</label>
+                        <div id="milestoneContainer">
+                            <div class="milestone-item">
+                                <input type="text" placeholder="Milestone description" class="milestone-input">
+                                <button type="button" class="remove-milestone">-</button>
+                            </div>
+                        </div>
+                        <button type="button" id="addMilestone" style="margin-top: 10px;">+ Add Milestone</button>
+                    </div>
+                    
+                    <button type="submit">Add Task</button>
+                </form>
+            </section>
+            
+            <section class="tasks-section">
+                <h2>Your Study Tasks</h2>
+                <div id="tasksContainer">
+                    <div class="empty-state">
+                        <img src="https://source.unsplash.com/random/?books,study" alt="No tasks">
+                        <p>No tasks yet. Add your first task to get started!</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const taskForm = document.getElementById('taskForm');
+            const addMilestoneBtn = document.getElementById('addMilestone');
+            const milestoneContainer = document.getElementById('milestoneContainer');
+            const tasksContainer = document.getElementById('tasksContainer');
+            
+            // Add milestone input field
+            addMilestoneBtn.addEventListener('click', function() {
+                const milestoneItem = document.createElement('div');
+                milestoneItem.className = 'milestone-item';
+                milestoneItem.innerHTML = `
+                    <input type="text" placeholder="Milestone description" class="milestone-input">
+                    <button type="button" class="remove-milestone">-</button>
+                `;
+                milestoneContainer.appendChild(milestoneItem);
+                
+                // Add event listener to remove button
+                milestoneItem.querySelector('.remove-milestone').addEventListener('click', function() {
+                    milestoneContainer.removeChild(milestoneItem);
+                });
+            });
+            
+            // Form submission
+            taskForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const taskName = document.getElementById('taskName').value;
+                const deadline = document.getElementById('deadline').value;
+                const description = document.getElementById('description').value;
+                
+                // Get milestones
+                const milestoneInputs = document.querySelectorAll('.milestone-input');
+                const milestones = [];
+                milestoneInputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        milestones.push({
+                            text: input.value.trim(),
+                            completed: false
+                        });
+                    }
+                });
+                
+                // Create task object
+                const task = {
+                    id: Date.now(),
+                    name: taskName,
+                    deadline: deadline,
+                    description: description,
+                    milestones: milestones,
+                    completed: false
+                };
+                
+                // Add task to UI
+                addTaskToUI(task);
+                
+                // Save to localStorage
+                saveTask(task);
+                
+                // Reset form
+                taskForm.reset();
+                milestoneContainer.innerHTML = '';
+                milestoneContainer.innerHTML = `
+                    <div class="milestone-item">
+                        <input type="text" placeholder="Milestone description" class="milestone-input">
+                        <button type="button" class="remove-milestone">-</button>
+                    </div>
+                `;
+                
+                // Add event listener to the new remove button
+                milestoneContainer.querySelector('.remove-milestone').addEventListener('click', function() {
+                    milestoneContainer.removeChild(milestoneContainer.firstElementChild);
+                });
+            });
+            
+            // Add task to UI
+            function addTaskToUI(task) {
+                // Remove empty state if it exists
+                if (tasksContainer.querySelector('.empty-state')) {
+                    tasksContainer.innerHTML = '';
+                }
+                
+                // Format deadline
+                const deadlineDate = new Date(task.deadline);
+                const formattedDeadline = deadlineDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                
+                // Calculate progress
+                const totalMilestones = task.milestones.length;
+                const completedMilestones = task.milestones.filter(m => m.completed).length;
+                const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+                
+                // Create task card
+                const taskCard = document.createElement('div');
+                taskCard.className = 'task-card';
+                taskCard.dataset.id = task.id;
+                taskCard.innerHTML = `
+                    <div class="task-header">
+                        <div class="task-title">${task.name}</div>
+                        <div class="task-deadline">${formattedDeadline}</div>
+                    </div>
+                    
+                    <div class="task-description">${task.description || 'No description provided'}</div>
+                    
+                    <div class="milestones-container">
+                        ${task.milestones.length > 0 ? 
+                          `<strong>Milestones:</strong>` : 
+                          '<p>No milestones added</p>'}
+                        ${task.milestones.map((milestone, index) => `
+                            <div class="milestone">
+                                <input type="checkbox" id="milestone-${task.id}-${index}" 
+                                    ${milestone.completed ? 'checked' : ''}
+                                    data-task="${task.id}" data-index="${index}">
+                                <label for="milestone-${task.id}-${index}" 
+                                    class="${milestone.completed ? 'completed' : ''}">
+                                    ${milestone.text}
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="progress-text">${progress}% Complete</div>
+                    
+                    <button class="delete-btn" data-id="${task.id}">Delete Task</button>
+                `;
+                
+                // Add to container
+                tasksContainer.prepend(taskCard);
+                
+                // Add event listeners to checkboxes
+                taskCard.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const taskId = this.dataset.task;
+                        const milestoneIndex = this.dataset.index;
+                        toggleMilestoneStatus(taskId, milestoneIndex);
+                    });
+                });
+                
+                // Add event listener to delete button
+                taskCard.querySelector('.delete-btn').addEventListener('click', function() {
+                    const taskId = this.dataset.id;
+                    deleteTask(taskId);
+                    tasksContainer.removeChild(taskCard);
+                    
+                    // Show empty state if no tasks left
+                    if (tasksContainer.children.length === 0) {
+                        tasksContainer.innerHTML = `
+                            <div class="empty-state">
+                                <img src="https://source.unsplash.com/random/?books,study" alt="No tasks">
+                                <p>No tasks yet. Add your first task to get started!</p>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            
+            // Toggle milestone status
+            function toggleMilestoneStatus(taskId, milestoneIndex) {
+                const tasks = getTasks();
+                const task = tasks.find(t => t.id == taskId);
+                
+                if (task) {
+                    task.milestones[milestoneIndex].completed = !task.milestones[milestoneIndex].completed;
+                    saveAllTasks(tasks);
+                    
+                    // Update progress display
+                    const taskCard = document.querySelector(`.task-card[data-id="${taskId}"]`);
+                    const totalMilestones = task.milestones.length;
+                    const completedMilestones = task.milestones.filter(m => m.completed).length;
+                    const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+                    
+                    taskCard.querySelector('.progress-fill').style.width = `${progress}%`;
+                    taskCard.querySelector('.progress-text').textContent = `${progress}% Complete`;
+                    
+                    // Update label styling
+                    const label = taskCard.querySelector(`label[for="milestone-${taskId}-${milestoneIndex}"]`);
+                    if (task.milestones[milestoneIndex].completed) {
+                        label.classList.add('completed');
+                    } else {
+                        label.classList.remove('completed');
+                    }
+                }
+            }
+            
+            // Save task to localStorage
+            function saveTask(task) {
+                const tasks = getTasks();
+                tasks.push(task);
+                localStorage.setItem('studyTasks', JSON.stringify(tasks));
+            }
+            
+            // Save all tasks to localStorage
+            function saveAllTasks(tasks) {
+                localStorage.setItem('studyTasks', JSON.stringify(tasks));
+            }
+            
+            // Get tasks from localStorage
+            function getTasks() {
+                return JSON.parse(localStorage.getItem('studyTasks')) || [];
+            }
+            
+            // Delete task
+            function deleteTask(taskId) {
+                const tasks = getTasks();
+                const updatedTasks = tasks.filter(task => task.id != taskId);
+                saveAllTasks(updatedTasks);
+            }
+            
+            // Load tasks on page load
+            function loadTasks() {
+                const tasks = getTasks();
+                
+                if (tasks.length === 0) {
+                    tasksContainer.innerHTML = `
+                        <div class="empty-state">
+                            <img src="https://source.unsplash.com/random/?books,study" alt="No tasks">
+                            <p>No tasks yet. Add your first task to get started!</p>
+                        </div>
+                    `;
+                } else {
+                    tasks.forEach(task => addTaskToUI(task));
+                }
+            }
+            
+            // Initialize the app
+            loadTasks();
+        });
+    </script>
+</body>
+</html>
